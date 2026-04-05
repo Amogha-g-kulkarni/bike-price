@@ -2,6 +2,6 @@ services:
   - type: web
     name: bike-price-api
     env: python
+    runtime: python
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app
-    plan: free
