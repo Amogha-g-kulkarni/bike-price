@@ -7,3 +7,4 @@ scikit-learn==1.4.2
 joblib
 flask-cors
 xgboost==2.0.3
+Cython>=3.0.11
