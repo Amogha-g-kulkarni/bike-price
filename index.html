@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bike Price Predictor</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #1f4037, #99f2c8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            width: 400px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #1f4037;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #14532d;
+        }
+
+        .result {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: #1f4037;
+        }
+
+        .error {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Bike Price Predictor 🚀</h2>
+
+    <form id="form">
+
+        <input type="number" id="age" placeholder="Age (years)" required>
+
+        <input type="number" id="km" placeholder="KM Driven" required>
+
+        <input type="number" id="price" placeholder="Ex Showroom Price" required>
+
+        <select id="brand">
+            <option>Hero</option>
+            <option>Honda</option>
+            <option>Bajaj</option>
+            <option>Yamaha</option>
+        </select>
+
+        <input type="text" id="model" placeholder="Model (e.g. Xpulse 200)" required>
+
+        <select id="seller">
+            <option>Individual</option>
+            <option>Dealer</option>
+        </select>
+
+        <select id="owner">
+            <option>First Owner</option>
+            <option>Second Owner</option>
+            <option>Third Owner</option>
+        </select>
+
+        <button type="submit">Predict Price</button>
+
+    </form>
+
+    <div class="result" id="result"></div>
+    <div class="error" id="error"></div>
+
+</div>
+
+<script>
+document.getElementById("form").onsubmit = async function(e) {
+    e.preventDefault();
+
+    document.getElementById("result").innerText = "";
+    document.getElementById("error").innerText = "";
+
+    const data = {
+        Age: Number(document.getElementById("age").value),
+        km_driven: Number(document.getElementById("km").value),
+        ex_showroom_price: Number(document.getElementById("price").value),
+        brand: document.getElementById("brand").value,
+        model: document.getElementById("model").value,
+        seller_type: document.getElementById("seller").value,
+        owner: document.getElementById("owner").value
+    };
+
+    try {
+        const response = await fetch("http://127.0.0.1:5000/predict", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (result.error || result.status === "error") {
+            document.getElementById("error").innerText =
+                result.error || result.message;
+        } else {
+            document.getElementById("result").innerText =
+                "Estimated Price: ₹" + Math.round(result.predicted_price);
+        }
+
+    } catch (err) {
+        document.getElementById("error").innerText =
+            "Server not reachable!";
+    }
+};
+</script>
+
+</body>
+</html>
