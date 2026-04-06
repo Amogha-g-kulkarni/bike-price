@@ -5,6 +5,9 @@ import numpy as np
 from flask_cors import CORS
 from flask import send_file
 import os
+import sklearn
+import xgboost
+import sys
 
 
 
@@ -24,6 +27,16 @@ def home():
         "status": "running",
         "message": "Bike Price API is live 🚀"
     })
+
+@app.route("/debug")
+def debug():
+    
+    
+    return {
+        "python_version": sys.version,
+        "sklearn_version": sklearn.__version__,
+        "xgboost_version": xgboost.__version__
+    }
 
 @app.route('/ui')
 def ui():
