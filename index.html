@@ -31,9 +31,9 @@
         }
         input, select, button {
             font-size: 16px;
+            box-sizing: border-box; /* Ensures padding doesn't affect width */
         }
         input, select {
-            
             width: 100%;
             padding: 10px;
             margin: 8px 0;
@@ -50,6 +50,7 @@
             border-radius: 6px;
             cursor: pointer;
             font-size: 16px;
+            margin-top: 10px;
         }
 
         button:hover {
@@ -64,25 +65,16 @@
             color: #1f4037;
         }
 
-        @media (max-width: 480px) {
-        .container {
-            padding: 20px;
-            border-radius: 10px;
-        }
-
-        h2 {
-            font-size: 20px;
-        }
-
-        .result {
-            font-size: 18px;
-        }
-    }
-
         .error {
             color: red;
             text-align: center;
             margin-top: 10px;
+        }
+
+        label {
+            font-size: 14px;
+            color: #555;
+            margin-left: 2px;
         }
     </style>
 </head>
@@ -93,30 +85,28 @@
 
     <form id="form">
 
-        <input type="number" id="age" placeholder="Age (years)" required>
+        <label for="year">Year of Purchase</label>
+        <select id="year" required>
+            <!-- JavaScript will populate years here -->
+        </select>
 
         <input type="number" id="km" placeholder="KM Driven" required>
 
-        <input type="number" id="price" placeholder="Ex Showroom Price" required>
+        <input type="number" id="price" placeholder="On road price" required>
 
-        <select id="brand">
-            <option>Hero</option>
-            <option>Honda</option>
-            <option>Bajaj</option>
-            <option>Yamaha</option>
-        </select>
+        <input type="text" id="brand" placeholder="Brand (e.g. Yamaha, Honda)" required>
 
         <input type="text" id="model" placeholder="Model (e.g. Xpulse 200)" required>
 
         <select id="seller">
-            <option>Individual</option>
-            <option>Dealer</option>
+            <option value="Individual">Individual</option>
+            <option value="Dealer">Dealer</option>
         </select>
 
         <select id="owner">
-            <option>First Owner</option>
-            <option>Second Owner</option>
-            <option>Third Owner</option>
+            <option value="First Owner">First Owner</option>
+            <option value="Second Owner">Second Owner</option>
+            <option value="Third Owner">Third Owner</option>
         </select>
 
         <button type="submit">Predict Price</button>
@@ -129,14 +119,27 @@
 </div>
 
 <script>
+// Populate Year Dropdown dynamically
+const yearSelect = document.getElementById("year");
+const currentYear = new Date().getFullYear();
+for (let i = currentYear; i >= 1990; i--) {
+    let option = document.createElement("option");
+    option.value = i;
+    option.text = i;
+    yearSelect.appendChild(option);
+}
+
 document.getElementById("form").onsubmit = async function(e) {
     e.preventDefault();
 
     document.getElementById("result").innerText = "";
     document.getElementById("error").innerText = "";
 
+    const selectedYear = Number(document.getElementById("year").value);
+    const calculatedAge = currentYear - selectedYear;
+
     const data = {
-        Age: Number(document.getElementById("age").value),
+        Age: calculatedAge,
         km_driven: Number(document.getElementById("km").value),
         ex_showroom_price: Number(document.getElementById("price").value),
         brand: document.getElementById("brand").value,
